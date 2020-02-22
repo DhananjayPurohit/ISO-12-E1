@@ -1,7 +1,6 @@
 from flask import Flask, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-
 from classifier import Classify
 
 app = Flask(__name__)
@@ -48,7 +47,7 @@ class Content(db.Model):
     content = db.Column(db.Text)
     votes = db.Column(db.Integer, default=0)
 
-class Subject_list(db.models):
+class Subject_list(db.Model):
     __tablename__ = 'subject_list'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -58,31 +57,30 @@ class Subject_list(db.models):
     year = db.Column(db.Integer)
     branch = db.Column(db.String(20))
 
-class branch_subject(db.models):
+class branch_subject(db.Model):
     __tablename__ = 'branch_subject'
 
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer)
     branch = db.Column(db.String(20))
     subject = db.Column(db.String(150), nullable=False)
-    syllabus = db.Column()
+    syllabus = db.Column(db.LargeBinary)
 
 ##### API #####
 
 @app.route('/add_syllabus', methods=['POST'])
 def add_subject():
-     form = addItem()
-     if form.validate_on_submit():
-         f = request.files['syllabus']
-         f.save(secure_filename(f.filename))
-         url = f.filename
-         item = branch_subject(year=form.year.data,branch=form.branch.data,
-                               subject=form.description.data,syllabus=url)
-         db.session.add(item)
-         db.session.commit()
-         return make_response("Syllabus updated")
-      else:
-         return make_response("Error adding syllabus")
+    subject_ = request.form.get('subject')
+    year_ = request.form.get('year')
+    branch_ = request.form.get('branch')
+    f = request.files['syllabus']
+
+    item = branch_subject(subject=subject_,year=year_,
+                        branch=branch_,syllabus=f.read())
+    db.session.add(item)
+    db.session.commit()
+
+    return make_response("Syllabus Added Successfully")
 
 @app.route('/login', methods=['POST'])
 def user_login():
@@ -90,13 +88,16 @@ def user_login():
     password = request.form.get('password')
 
     Opass = Subject_list.query.filter_by(user=username).first()
-    Opass = Opass.password
-    if password == Opass:
+    Opass1 = Opass.password
+    if password == Opass1:
         sub_list = branch_subject.query.filter_by(year=Opass.year).filter_by(branch=Opass.branch).all()
         subjects = []
         for i in sub_list:
             subjects.append(i.subject)
-        return make_response(str(subjects))
+
+        resp_ = make_response(str(subjects))
+        resp_.set_cookie('subjects', str(subjects))
+        return resp_
     else:
         return make_response("Error, Login again")
 
