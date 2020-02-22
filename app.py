@@ -48,7 +48,72 @@ class Content(db.Model):
     content = db.Column(db.Text)
     votes = db.Column(db.Integer, default=0)
 
+class Subject_list(db.models):
+    __tablename__ = 'subject_list'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    user = db.Column(db.String(200))
+    password = db.Column(db.String(200))
+    year = db.Column(db.Integer)
+    branch = db.Column(db.String(20))
+
+class branch_subject(db.models):
+    __tablename__ = 'branch_subject'
+
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer)
+    branch = db.Column(db.String(20))
+    subject = db.Column(db.String(150), nullable=False)
+    syllabus = db.Column()
+
 ##### API #####
+
+@app.route('/add_syllabus', methods=['POST'])
+def add_subject():
+     form = addItem()
+     if form.validate_on_submit():
+         f = request.files['syllabus']
+         f.save(secure_filename(f.filename))
+         url = f.filename
+         item = branch_subject(year=form.year.data,branch=form.branch.data,
+                               subject=form.description.data,syllabus=url)
+         db.session.add(item)
+         db.session.commit()
+         return make_response("Syllabus updated")
+      else:
+         return make_response("Error adding syllabus")
+
+@app.route('/login', methods=['POST'])
+def user_login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    Opass = Subject_list.query.filter_by(user=username).first()
+    Opass = Opass.password
+    if password == Opass:
+        sub_list = branch_subject.query.filter_by(year=Opass.year).filter_by(branch=Opass.branch).all()
+        subjects = []
+        for i in sub_list:
+            subjects.append(i.subject)
+        return make_response(str(subjects))
+    else:
+        return make_response("Error, Login again")
+
+@app.route('/register', methods=['POST'])
+def user_signup():
+    name_ = request.form.get('name')
+    user_ = request.form.get('username')
+    password_ = request.form.get('password')
+    year_ = request.form.get('year')
+    branch_ = request.form.get('branch')
+
+    item = Subject_list(name=name_,user=user_,password=password_,year=year_,
+                        branch=branch_)
+    db.session.add(item)
+    db.session.commit()
+
+    return make_response("User registered Successfully")
 
 @app.route('/get_content', methods=['GET'])
 def get_content():
@@ -57,7 +122,7 @@ def get_content():
     resp_list = []
     for i in subject_resp:
         resp_list.append(i._dict_)
-        
+
     return make_response(str(resp_list))
 
 ##### API #####
@@ -74,7 +139,7 @@ def save_feedback():
     teacher_obj = Teacher.query.filter(Teacher.name == teacher).one()
 
     positive_score = Classify(opinion).classify()
-    
+
     if positive_score > 0.6:
         feedback_obj = Feedback(ques_1=ques_1, ques_2=ques_2, ques_3=ques_3,
                                 ques_4=ques_4, opinion=opinion, teacher=teacher_obj.id)
@@ -84,7 +149,7 @@ def save_feedback():
         return make_response("Feedback Posted Successfully!")
     else:
         return make_response("Invalid Feedback. Please check your language quality")
-        
+
 
 if __name__ == '__main__':
     db.create_all()
