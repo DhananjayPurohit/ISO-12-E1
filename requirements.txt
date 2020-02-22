@@ -1,4 +1,7 @@
 flask
 flask-cors
+pytrends
+wikipedia-api
+youtube-search
 flask-sqlalchemy
 nltk
