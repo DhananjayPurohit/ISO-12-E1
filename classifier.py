@@ -19,4 +19,6 @@ class Classify:
         m = f.prob_classify(dict([token, True] for token in self.news_token))
         return m.prob("Positive")
 
-print(Classify("Rocket boost in Tesla stocks").classify())
+while True:
+    a = input("ENTER >>> ")
+    print(Classify(a).classify())

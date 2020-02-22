@@ -6,6 +6,7 @@ from nltk import NaiveBayesClassifier
 import re, string 
 import random 
 import pickle
+import pandas as pd 
 
 class Sentiment:
     """
@@ -17,8 +18,12 @@ class Sentiment:
         self.negative_cleaned_tokens_list = []
         self.positive_tweets_tokens = twitter_samples.tokenized('positive_tweets.json')
         self.negative_tweets_tokens = twitter_samples.tokenized('negative_tweets.json')
+        self.non_abusive = self.positive_tweets_tokens[:808] + self.negative_cleaned_tokens_list[:811]
+        self.abusive_words = pd.read_csv('bad-words.csv')['jigaboo']
+        self.abusive = []
+        for word in self.abusive_words:
+            self.abusive.append(word)
 
-    
     def remove_noise(self, token_):
         cleaned_tokens = []
 
@@ -46,38 +51,45 @@ class Sentiment:
         return cleaned_tokens
 
         
-    def get_tweet_for_model(self, cleaned_tokens_list):
-        for tweet_tokens in cleaned_tokens_list:
-            yield dict([token, True] for token in tweet_tokens)
+    def get_tweet_for_model(self, cleaned_tokens_list, sen):
+        if sen == 'p':
+            for tweet_tokens in cleaned_tokens_list:
+                yield dict([token, True] for token in tweet_tokens)
+        else:
+            for tweet_tokens in cleaned_tokens_list:
+                yield dict([tweet_tokens, True])
 
 
     def preprocess_data(self):
 
-        for tokens in self.positive_tweets_tokens:
+        for tokens in self.non_abusive:
             self.positive_cleaned_tokens_list.append(self.remove_noise(tokens))
 
-        for tokens in self.negative_tweets_tokens:
-            self.negative_cleaned_tokens_list.append(self.remove_noise(tokens))
+        positive_tokens_for_model = self.get_tweet_for_model(self.positive_cleaned_tokens_list, 'p')
+        negative_tokens_for_model = []
 
-        positive_tokens_for_model = self.get_tweet_for_model(self.positive_cleaned_tokens_list)
-        negative_tokens_for_model = self.get_tweet_for_model(self.negative_cleaned_tokens_list)
+        for word in self.abusive:
+            dict_ = {word: True}
+            e = (dict_, 'Negative')
+            negative_tokens_for_model.append(e)
 
         positive_dataset = [(tweet_dict, "Positive") for tweet_dict in positive_tokens_for_model]
-        negative_dataset = [(tweet_dict, "Negative") for tweet_dict in negative_tokens_for_model]
+        negative_dataset = negative_tokens_for_model
 
         dataset = positive_dataset + negative_dataset
-
         random.shuffle(dataset)
 
-        # Splitting data [70:30 ratio]
-        train_data = dataset[:7000]
-        test_data = dataset[7000:]
+        print(len(dataset))
+        print(dataset[:5])
 
-        return train_data, test_data
+        # Splitting data [70:30 ratio]
+        train_data = dataset[:1600]
+
+        return train_data
 
     
     def train_data(self):
-        train_set = self.preprocess_data()[0]
+        train_set = self.preprocess_data()
         classifier = NaiveBayesClassifier.train(train_set)
         f = open('my_classifier.pickle', 'wb')
         pickle.dump(classifier, f)
