@@ -9,16 +9,14 @@ import pickle
 import pandas as pd 
 
 class Sentiment:
-    """
-    This class trains the data on 10000 tweets
-    """
+
     def __init__(self):
         self.stop_words = stopwords.words('english')
         self.positive_cleaned_tokens_list = []
         self.negative_cleaned_tokens_list = []
         self.positive_tweets_tokens = twitter_samples.tokenized('positive_tweets.json')
         self.negative_tweets_tokens = twitter_samples.tokenized('negative_tweets.json')
-        self.non_abusive = self.positive_tweets_tokens[:808] + self.negative_cleaned_tokens_list[:811]
+        self.non_abusive = self.positive_tweets_tokens[:808] + self.negative_tweets_tokens[:811]
         self.abusive_words = pd.read_csv('bad-words.csv')['jigaboo']
         self.abusive = []
         for word in self.abusive_words:
@@ -79,11 +77,8 @@ class Sentiment:
         dataset = positive_dataset + negative_dataset
         random.shuffle(dataset)
 
-        print(len(dataset))
-        print(dataset[:5])
-
         # Splitting data [70:30 ratio]
-        train_data = dataset[:1600]
+        train_data = dataset[:6000]
 
         return train_data
 

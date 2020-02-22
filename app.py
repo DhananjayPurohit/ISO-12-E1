@@ -140,7 +140,7 @@ def save_feedback():
 
     positive_score = Classify(opinion).classify()
 
-    if positive_score > 0.6:
+    if positive_score > 0.75:
         feedback_obj = Feedback(ques_1=ques_1, ques_2=ques_2, ques_3=ques_3,
                                 ques_4=ques_4, opinion=opinion, teacher=teacher_obj.id)
         db.session.add(feedback_obj)
