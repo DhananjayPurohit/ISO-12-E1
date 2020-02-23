@@ -1,0 +1,93 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+
+<script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
+<h4 align='center' style="margin-top:75; margin-bottom:15">Register Here</h4>
+<div id="user-login" class="row" style="max-width:750">
+	<div class="col s12 z-depth-6 card-panel">
+		<form class="login-form">
+            <div class="row margin">
+				<div class="input-field col s12">
+					<i class="mdi-social-person-outline prefix"></i>
+					<input class="validate" id="user_name" type="email" placeholder="Full Name">
+				</div>
+			</div>
+			<div class="row margin">
+				<div class="input-field col s12">
+					<i class="mdi-social-person-outline prefix"></i>
+					<input class="validate" id="user_email" type="email" placeholder="Username">
+				</div>
+			</div>
+			<div class="row margin">
+				<div class="input-field col s12">
+					<i class="mdi-action-lock-outline prefix"></i>
+					<input id="user_pass" placeholder="Password" type="password">
+				</div>
+			</div>
+		
+            <div class="input-field col s12">
+                <select class="browser-default year">
+                  <option value="" disabled selected>Year of Study</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>   
+            </div>
+
+            <div class="input-field col s12">
+                <select class="browser-default branch">
+                  <option value="" disabled selected>Branch of Study</option>
+                  <option value="CS">CS</option>
+                  <option value="IT">IT</option>
+                  <option value="Civil">Civil</option>
+                  <option value="Biomedical">Biomedical</option>
+                  <option value="IP">IP</option>
+                  <option value="ETC">ETC</option>
+                </select>   
+            </div>
+            <div class="row">
+				<div class="input-field col s12" style="margin-bottom: 30">
+					<a href="login.html" class="btn waves-effect waves-light col s12" onclick="onButtonClick()">Register</a>
+				</div>
+            
+                <h6 align='center'>Already Have an Account? <a href='./login.html'>Login here :)</a></h6>
+         	
+		</form>
+	</div>
+</div>
+
+<script>
+    async function onButtonClick(){
+        var username = document.getElementById('user_name').value;
+        var useremail = document.getElementById('user_email').value;
+        var branch = document.getElementsByClassName('browser-default branch').value
+        var year = document.getElementsByClassName('browser-default year').value
+        var password = document.getElementById('user_pass').value;
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+      var formdata = new FormData();
+      
+      formdata.append("name_", username);
+      formdata.append("email_", useremail);
+      formdata.append("password_", password)
+      formdata.append("branch_", branch);
+      formdata.append("year_", year);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      };
+
+      fetch("http://127.0.0.1:5000/register", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    }
+</script>
