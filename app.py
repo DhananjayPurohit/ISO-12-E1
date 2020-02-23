@@ -1,9 +1,10 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from classifier import Classify
 from extract import *
-from recommendation import Trends
+from recommendation import Trends, getCONTENT
+import random
 
 app = Flask(__name__)
 
@@ -121,12 +122,13 @@ def user_signup():
 @app.route('/get_content', methods=['GET'])
 def get_content():
     sub = request.args.get('sub', type = str)
+    sub = sub.replace("%20", " ")
     subject_resp = Content.query.filter_by(subject=sub).all()
-    resp_list = []
+    resp_list = ""
     for i in subject_resp:
-        resp_list.append(i._dict_)
+        resp_list+=str(i.__dict__)
 
-    return make_response(str(resp_list))
+    return jsonify(resp_list)
 
 ##### API #####
 @app.route('/add', methods=['GET'])
@@ -135,10 +137,16 @@ def add_topic():
     for i in list:
         topics = i.split(",")
         for topic_ in topics:
-            t = Trends([topic_])
-            tpic = Content(subject='Data Structure', topic=topic_, video_content=t.preference_video, content=t.get_content())
-            db.session.add(item)
-    db.session.commit()
+            t = random.choice([True,False])
+            try:
+                tpic = Content(subject='Data Structure', topic=topic_, video_content=t, content=getCONTENT(t, [topic_]).summary)
+                db.session.add(tpic)
+                db.session.commit()
+                print("new entry")
+            except Exception as e:
+                print(e)
+                pass
+
     return make_response("User registered Successfully")
 
 @app.route('/post_feedback', methods=['POST'])

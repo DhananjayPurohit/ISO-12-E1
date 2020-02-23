@@ -33,10 +33,14 @@
       .tabs .indicator {
           background-color:#18a2a3;
       } /*C*/
+      iframe{
+        width: 560px;
+        height: 315px;
+      }
     </style>
 
   </head>
-  <body style="overflow:hidden">
+  <body>
     <nav class="nav-extended" style="background-color:#1AB0B1;opacity:0.9">
       <div class="nav-wrapper" style="height:100px;">
         <a href="#" class="brand-logo" style="margin:20px;font-size:50px;font-family:Roboto">Syllabus Content</a>
@@ -54,29 +58,14 @@
     <div class="" style="background-color:#1AB0B1">
       <img src='homeimage.jpeg' height="300px" style="margin-left:100px">
     </div>
-    <div class="container" style="margin-top:-100px;">
-      <div class="row" >
-        <div class="col s12">
+    <div class="container"  style="margin-top:-100px;">
+      <div class="row" id="cont" >
+        <div class="col s12" >
           <ul class="tabs" id="subject_tabs" style="border-radius:3px;">
 
           </ul>
         </div>
-        <div id="APP" class="col s12"><div class="" style="background:white;position:absolute;width:1259px;z-index:10">
-          <ul class="collapsible expandable">
-              <li>
-                <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-              </li>
-              <li>
-                <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-              </li>
-              <li>
-                <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
-                <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-              </li>
-            </ul>
-        </div></div>
+      </div>
       </div>
     </div>
 
@@ -84,10 +73,6 @@
       $(document).ready(function(){
         $('.sidenav').sidenav();
       });
-      var elem = document.querySelector('.collapsible.expandable');
-      var instance = M.Collapsible.init(elem, {
-        accordion: false
-      })
 
       $(document).ready(function(){
         $('.tabs').tabs();
@@ -95,7 +80,30 @@
       var x = eval(document.cookie.slice(9));
       for(var i=0; i<=x.length-1; i++){
         $("#subject_tabs").append('<li class="tab col s'+Math.floor(12/x.length).toString()+'"><a href="'+x[i]+'" >'+x[i]+'</a></li>');
+        $("#cont").append('<div class="col s12"><div style="background:white;position:absolute;width:1259px;z-index:10"><ul id="'+x[i][0]+'" class="collapsible"></ul></div>');
+        fetch("http://127.0.0.1:5000/get_content?sub="+x[i])
+        .then((response) => response.json())
+        .then(resp => add_content(resp));
       }
+
+      function add_content(resp){
+        console.log("done")
+        for(var j=2; j<=resp.split("'topic':").length-1; j++){
+          topic_ = resp.split("'topic':")[j+1].split(",")[0].replace("'", "");
+          console.log(resp.split("'topic':")[j].split(",")[2].replace("'", "")[17], resp.split("'topic':")[j].split(",")[5].replace("'", ""));
+          if(resp.split("'topic':")[j].split(",")[2].replace("'", "")[17]=='F'){
+            $("#D").append('<li><div class="collapsible-header">'+topic_+'</div><div class="collapsible-body"><span>'+resp.split("'topic':")[j].split(",")[5].replace("'", "").substring(12,resp.split("'topic':")[j].split(",")[5].replace("'", "").length)+'</span></div></li>');
+          }
+          else{
+            $("#D").append('<li><div class="collapsible-header">'+topic_+'</div><div class="collapsible-body center"><iframe src=https://www.youtube.com/embed/"'+resp.split("'topic':")[j].split(",")[5].replace("'", "").substring(39,resp.split("'topic':")[j].split(",")[5].replace("'", "").length)+'"></iframe></div></li>');
+          }
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.collapsible');
+        var instances = M.Collapsible.init(elems);
+      });
+
     </script>
 
   </body>
