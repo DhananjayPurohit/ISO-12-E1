@@ -38,5 +38,3 @@ class Trends():
             else:
                 self.summary = "No info found !"
             return self.summary
-
-# print(Trends(keyword).get_content())

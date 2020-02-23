@@ -1,10 +1,14 @@
+<script
+	src="https://code.jquery.com/jquery-2.2.4.min.js"
+	integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
 <h4 align='center' style="margin-top:75; margin-bottom:15">Login</h4>
 <h6 align='center' style="color: #d3d3d3;; margin-bottom: 30;">The Classic Way!</h6>
 <div id="user-login" class="row" style="max-width:750">
 	<div class="col s12 z-depth-6 card-panel">
-		<form class="login-form">
+		<form class="login-form" method="post">
 			<div class="row margin">
 				<div class="input-field col s12">
 					<i class="mdi-social-person-outline prefix"></i>
@@ -19,37 +23,42 @@
 			</div>
 			<div class="row">
 				<div class="input-field col s12">
-					<a href="login.html" class="btn waves-effect waves-light col s12" onclick="onButtonClick()">Login</a>
+					<a class="btn waves-effect waves-light col s12" onclick="onButtonClick()">Login</a>
 				</div>
             </div>
             <h6 style="margin-top:30;" align='center'>New Here? <a href='./register.html'>Register here</a></h6>
-         	
+
 		</form>
 	</div>
 </div>
 
 <script>
-async function onButtonClick(){
-	var username = document.getElementById('user_email').value;
-	var password = document.getElementById('user_pass').value;
-	var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+function onButtonClick(){
+	// var myHeaders = new Headers();
+	// myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+	var myHeaders = {
+		'Accept': 'application/json',
+  	'Content-Type': 'application/json'
+	}
+	//
+	// var formdata = new FormData();
+	// formdata.append("username", "vedangj");
+	// formdata.append("password", "pass123");
 
-      var formdata = new FormData();
-      
-	  formdata.append("username", username);
-      formdata.append("password", password);
+	var requestOptions = {
+	  method: 'POST',
+	  headers: myHeaders,
+	  body:JSON.stringify({
+			username:"vedangj",
+			password:"pass123"
+		}),
+	  redirect: 'follow'
+	};
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: formdata,
-        redirect: 'follow'
-      };
 
-      fetch("http://127.0.0.1:5000/login", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+	fetch("http://127.0.0.1:5000/login", requestOptions)
+	  .then(response => response.text())
+	  .then(result => document.cookie = "subjects="+result)
+	  .catch(error => console.log('error', error));
 }
 </script>

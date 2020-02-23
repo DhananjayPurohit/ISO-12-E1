@@ -64,4 +64,4 @@ class Topic_extractor():
 
         return self.final_list
 
-print(Topic_extractor(Pdf_reader("ds.pdf").full_text).final_list)
+# print(Topic_extractor(Pdf_reader("ds.pdf").full_text).final_list)

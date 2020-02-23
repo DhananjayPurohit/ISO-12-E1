@@ -1,15 +1,18 @@
 from flask import Flask, request, make_response
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from classifier import Classify
+from extract import *
+from recommendation import Trends
 
 app = Flask(__name__)
 
 # Database Config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
+app.config['CORS_HEADERS'] = 'Content-Type'
 db = SQLAlchemy(app)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 ######  MODELS ######
 
@@ -84,9 +87,8 @@ def add_subject():
 
 @app.route('/login', methods=['POST'])
 def user_login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-
+    username = request.json.get('username')
+    password = request.json.get('password')
     Opass = Subject_list.query.filter_by(user=username).first()
     Opass1 = Opass.password
     if password == Opass1:
@@ -127,6 +129,17 @@ def get_content():
     return make_response(str(resp_list))
 
 ##### API #####
+@app.route('/add', methods=['GET'])
+def add_topic():
+    list = Topic_extractor(Pdf_reader("ds.pdf").full_text).final_list
+    for i in list:
+        topics = i.split(",")
+        for topic_ in topics:
+            t = Trends([topic_])
+            tpic = Content(subject='Data Structure', topic=topic_, video_content=t.preference_video, content=t.get_content())
+            db.session.add(item)
+    db.session.commit()
+    return make_response("User registered Successfully")
 
 @app.route('/post_feedback', methods=['POST'])
 def save_feedback():
