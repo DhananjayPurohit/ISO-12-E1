@@ -3,11 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from classifier import Classify
 from extract import *
+from werkzeug.utils import secure_filename
 from recommendation import Trends, getCONTENT
 import random
 
-app = Flask(__name__)
+UPLOAD_FOLDER = '/uploadsflask'
 
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Database Config
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -78,6 +81,8 @@ def add_subject():
     year_ = request.form.get('year')
     branch_ = request.form.get('branch')
     f = request.files['syllabus']
+
+    f.save(secure_filename(f.filename))
 
     item = branch_subject(subject=subject_,year=year_,
                         branch=branch_,syllabus=f.read())

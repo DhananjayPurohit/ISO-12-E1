@@ -34,7 +34,22 @@
         font-size:20px;
         font-family:Roboto;
       }
-
+      .added{
+        border: 2px solid green;
+        padding: 10px;
+        background: lightgreen;
+        color: black;
+        font-family: sans-serif;
+        border-radius: 15px;
+        opacity: 0.65;
+        width: 300px;
+        font-size: 20px;
+      }
+      .added_con{
+        position: absolute;
+        top: 80%;
+        left: 30%;
+      }
     </style>
 
   </head>
@@ -50,7 +65,7 @@
       </div>
       <div class="col s12">
           <div class="input-field col s3">
-            <select>
+            <select id="year">
                <option value="1">1 year</option>
                <option value="2">2</option>
                <option value="3">3</option>
@@ -70,7 +85,7 @@
           <div class="file-field input-field">
             <div class="btn">
               <span>File</span>
-              <input type="file">
+              <input type="file" id="fileUpload">
             </div>
             <div class="file-path-wrapper">
               <input class="file-path validate" type="text">
@@ -78,8 +93,11 @@
           </div>
         </form>
         <div class="row center">
-          <a class="waves-effect waves-light btn"><i class="material-icons right">add</i>Submit</a>
+          <a class="waves-effect waves-light btn" id="submitB"><i class="material-icons right">add</i>Submit</a>
         </div>
+        <div class="container center added_con">
+
+      </div>
       </div>
 
 
@@ -88,6 +106,36 @@
       $(document).ready(function(){
         $('select').formSelect();
       });
+      $("#submitB").click(function(){
+        var sub_ = $('#subject').val()
+        var year_ = $('#year :selected').val()
+        var branch_ = $('#branch :selected').val()
+        var file_ = $('#fileUpload').value;
+        var myHeaders = new Headers();
+        var input = document.querySelector('input[type="file"]');
+        var formdata = new FormData();
+        formdata.append("year", year_);
+        formdata.append("branch", branch_);
+        formdata.append("subject", sub_);
+        formdata.append("syllabus", input.files[0]);
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/add_syllabus", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+        $(".added_con").append('<div class="row added"><p>'+sub_+'</p></div>')
+
+      });
+
+
 
     </script>
 
