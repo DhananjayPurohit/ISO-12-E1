@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway|Roboto&display=swap" rel="stylesheet">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style media="screen">
+      .back{
+        background-color: #ff7700;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cpolygon fill='%23b00303' points='957 450 539 900 1396 900'/%3E%3Cpolygon fill='%23a20000' points='957 450 872.9 900 1396 900'/%3E%3Cpolygon fill='%23d50a33' points='-60 900 398 662 816 900'/%3E%3Cpolygon fill='%23b30728' points='337 900 398 662 816 900'/%3E%3Cpolygon fill='%23d0215e' points='1203 546 1552 900 876 900'/%3E%3Cpolygon fill='%23b73b66' points='1203 546 1552 900 1162 900'/%3E%3Cpolygon fill='%23c73580' points='641 695 886 900 367 900'/%3E%3Cpolygon fill='%23b83477' points='587 900 641 695 886 900'/%3E%3Cpolygon fill='%23cd39a3' points='1710 900 1401 632 1096 900'/%3E%3Cpolygon fill='%23a32b81' points='1710 900 1401 632 1365 900'/%3E%3Cpolygon fill='%23931493' points='1210 900 971 687 725 900'/%3E%3Cpolygon fill='%23800580' points='943 900 1210 900 971 687'/%3E%3C/svg%3E");
+        background-attachment: fixed;
+        background-size: cover;
+      }
+    </style>
+
+
+  </head>
+  <body class="back">
+    <div class="container">
+      <h1 style="color:white;font-family:Roboto">Feedback Dashboard</h1>
+      <br>
+      <h5 style="color:white;font-family:Roboto;margin-bottom:-40px;">Mr. Vedang Joshi </h5>
+    </div>
+
+    <div class="container chart" style="background:white;margin-top:80px;border-radius:10px;">
+      <div class="row">
+        <div class="col s6">
+          <canvas id="myChart"></canvas>
+        </div>
+        <div class="col s6">
+          <canvas id="myChart1"></canvas>
+        </div>
+        <div class="col s6">
+          <canvas id="myChart2"></canvas>
+        </div>
+        <div class="col s6">
+          <canvas id="myChart3"></canvas>
+        </div>
+        <div class="col s12">
+          <h3>Opinion</h3>
+          <ul>
+            <li><h4 id="opinion"></h4></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var myHeaders = new Headers();
+
+      var resp;
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+
+      fetch("http://127.0.0.1:5000/post_feedback", requestOptions)
+        .then(response => response.text())
+        .then(result => visual(result))
+        .catch(error => console.log('error', error));
+
+      function visual(resp){
+        console.log();
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          options: {title: {display: true,text: 'Question #1'}},
+          data: {
+            labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
+            datasets: [{
+              backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+              ],
+              data: eval(resp.split(": ")[2].substring(0, 43))
+            }]
+          }
+        });
+        var ctx = document.getElementById("myChart1").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          options: {title: {display: true,text: 'Question #1'}},
+          data: {
+            labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
+            datasets: [{
+              backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+              ],
+              data: eval(resp.split(": ")[3].substring(0, 43))
+            }]
+          }
+        });
+        var ctx = document.getElementById("myChart2").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          options: {title: {display: true,text: 'Question #1'}},
+          data: {
+            labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
+            datasets: [{
+              backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+              ],
+              data: eval(resp.split(": ")[4].substring(0, 43))
+            }]
+          }
+        });
+        var ctx = document.getElementById("myChart3").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'pie',
+          options: {title: {display: true,text: 'Question #1'}},
+          data: {
+            labels: ["1 star", "2 star", "3 star", "4 star", "5 star"],
+            datasets: [{
+              backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+                "#95a5a6",
+                "#9b59b6",
+                "#f1c40f",
+              ],
+              data: eval(resp.split(": ")[5].substring(0, 43))
+            }]
+          }
+        });
+        $("#opinion").text(eval(resp.split("]")[0].split("[")[1]))
+      }
+
+
+    </script>
+  </body>
+</html>

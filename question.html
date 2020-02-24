@@ -14,6 +14,9 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <style media="screen">
+      p{
+        font-size:larger;
+      }
     </style>
 
   </head>
@@ -28,6 +31,147 @@
     <div class="" style="background-color:#275660">
       <img src='homeimage1.jpeg' height="300px" style="margin-left:0px;width:450px;">
     </div>
+    <div class="row">
+      <div class="col s12 m3"></div>
+      <div class="col s12 m6" style="margin-top:-100px">
+        <center>
+        <div class="card horizontal " style="width:60%">
+          <div class="card-stacked">
+            <div class="card-content">
+              <!-- <p>Select Teacher</p> -->
+            </div>
+            <div class="card-action">
+              <select>
+                <option value="" disabled selected>Select Teacher</option>
+                <option value="5">Jon Doe</option>
+                <option value="4">Harry San</option>
+                <option value="3">Vedang Joshi</option>
+                <option value="2">Peter Bell</option>
+                <option value="1">Raj Jain</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </center>
+      <br/><br/>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>Does the teacher take classes regularly?</p>
+            </div>
+            <div class="card-action">
+              <select id="q1">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+                <option value="3">Fair</option>
+                <option value="2">Poor</option>
+                <option value="1">Very Poor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>Is the teacher friendly while explaining doubts?</p>
+            </div>
+            <div class="card-action">
+              <select id="q2">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+                <option value="3">Fair</option>
+                <option value="2">Poor</option>
+                <option value="1">Very Poor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>The teacher maintains enthusiasm as well as discipline in the class?</p>
+            </div>
+            <div class="card-action">
+              <select id="q3">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+                <option value="3">Fair</option>
+                <option value="2">Poor</option>
+                <option value="1">Very Poor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>Does the teacher use technology and practical examples to explain tough concepts?</p>
+            </div>
+            <div class="card-action">
+              <select id="q4">
+                <option value="" disabled selected>Choose your option</option>
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+                <option value="3">Fair</option>
+                <option value="2">Poor</option>
+                <option value="1">Very Poor</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>Your opinion?</p>
+            </div>
+            <div class="card-action">
+              <div class="input-field col s12">
+                <textarea id="op" class="materialize-textarea"></textarea>
+                <label for="textarea1">Comments</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <center>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button>
+      </center>
+    </div>
+    <div class="col s12 m4">
 
+    </div>
+    </div>
+    <script>
+      $(document).ready(function(){
+          $('select').formSelect();
+        });
+
+        var myHeaders = new Headers();
+
+        var formdata = new FormData();
+        formdata.append("ques_1", document.getElementById("q1").value);
+        formdata.append("ques_2", document.getElementById("q2").value);
+        formdata.append("ques_3", document.getElementById("q3").value);
+        formdata.append("ques_4", document.getElementById("q4").value);
+        formdata.append("teacher", "VJ");
+        formdata.append("opinion", document.getElementById("op").val());
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/post_feedback", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+    </script>
   </body>
 </html>

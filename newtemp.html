@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="CreativeButtons/css/default.css" />
+		<link rel="stylesheet" type="text/css" href="CreativeButtons/css/component.css" />
+		<script src="CreativeButtons/js/modernizr.custom.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style>
+        .theme {
+            background-color: #0c2461;
+        }
+        .btn-2h {
+          margin-top:10px;
+        }
+
+        .btn-2h:hover {
+        	background: #800000;
+        	color: #226fbe;
+
+        }
+        .temp2 {
+            display: none;
+        }
+        .usp{
+          font-size: 30px;
+          border: 1px solid grey;
+          font-family: Roboto;
+          margin: 1px;
+          cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <form class="col s12 m4" style="margin-right: 0px;" name="myForm" method="POST">
+            <div class="row" style="margin:20px ">
+                <p>
+                    <label style="margin-right:50px">
+                        <input name="group1" type="radio" id="rad" value="blue" checked />
+                        <span>Blue</span>
+                    </label>
+                    <label>
+                        <input name="group1" type="radio" id="rad" />
+                        <span>Red</span>
+                    </label>
+                </p>
+                <p>
+                    <label style="margin-right:35px">
+                        <input name="group2" type="radio" id="cs" value="def" checked />
+                        <span>Temp1</span>
+                    </label>
+                    <label>
+                        <input name="group2" type="radio" id="cs" />
+                        <span>Temp2</span>
+                    </label>
+                </p>
+                <div class="input-field col s12">
+                    <input id="inst_name" type="text" class="validate" name="inst_name">
+                    <label for="inst_name">Institute name</label>
+                </div>
+                <br />
+                <br />
+                <br />
+                <div class="file-field input-field">
+                    <div class="btn1">
+                        <span>Logo</span>
+                        <input type="file" onchange="onFileSelected(event)" id="logo" name="logo">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input placeholder="Upload Logo" class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="file-field input-field">
+                    <div class="btn1">
+                        <span>Carousel Images</span>
+                        <input type="file" multiple onchange="onMultipleFileSelect(event)" id="caro" name="caro">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Upload one or more images">
+                    </div>
+                </div>
+                <div class="input-field col s12">
+                    <textarea id="vision" class="materialize-textarea" name="vis"></textarea>
+                    <label for="vision">Vision</label>
+                </div>
+                <div class="input-field col s12">
+                    <input id="location" type="text" class="validate" name="loc">
+                    <label for="location">Location</label>
+                </div>
+                <div class="input-field col s12">
+                    <input id="contact" type="text" class="validate" name="contact">
+                    <label for="contact">Contact no.</label>
+                </div>
+            </div>
+            <center>
+                <button class="btn waves-effect waves-light" type="button" style="font-weight:bolder"
+                    onClick="onSubmit()">Submit
+                </button>
+            </center>
+        </form>
+        <div class="col s12 m8">
+
+            <nav style="height:20vh" class="theme">
+                <div class="nav-wrapper">
+                    <img src="https://source.unsplash.com/random" id="logo"
+                        style="width:120px; height:120px; margin:20px" />
+                    <a href="#" id="inst_l" class="brand-logo" style="margin:10px; font-size:30px">Institute Name</a>
+                    <!-- <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="sass.html">Sass</a></li>
+                    <li><a href="badges.html">Components</a></li>
+                    <li><a href="collapsible.html">JavaScript</a></li>
+                  </ul> -->
+                </div>
+            </nav>
+            <div class="temp1">
+                <div class="carousel carousel-slider center" style="height:40vh">
+                    <!-- <div class="carousel-fixed-item center">
+                  <a class="btn waves-effect white grey-text darken-text-2">button</a>
+                </div> -->
+                    <div class="carousel-item red white-text" href="#one!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img1" />
+                        <h2>First Panel</h2>
+                        <p class="white-text">This is your first panel</p>
+                    </div>
+                    <div class="carousel-item amber white-text" href="#two!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img2" />
+                        <h2>Second Panel</h2>
+                        <p class="white-text">This is your second panel</p>
+                    </div>
+                    <div class="carousel-item green white-text" href="#three!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img3" />
+                        <h2>Third Panel</h2>
+                        <p class="white-text">This is your third panel</p>
+                    </div>
+                    <div class="carousel-item blue white-text" href="#four!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img4" />
+                        <h2>Fourth Panel</h2>
+                        <p class="white-text">This is your fourth panel</p>
+                    </div>
+                </div>
+            </div>
+            <div class="temp2">
+                <div class="carousel carousel-slider center col s12 m8" style="height:40vh">
+                    <!-- <div class="carousel-fixed-item center">
+                      <a class="btn waves-effect white grey-text darken-text-2">button</a>
+                    </div> -->
+                    <div class="carousel-item red white-text" href="#one!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img1" />
+                        <h2>First Panel</h2>
+                        <p class="white-text">This is your first panel</p>
+                    </div>
+                    <div class="carousel-item amber white-text" href="#two!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img2" />
+                        <h2>Second Panel</h2>
+                        <p class="white-text">This is your second panel</p>
+                    </div>
+                    <div class="carousel-item green white-text" href="#three!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img3" />
+                        <h2>Third Panel</h2>
+                        <p class="white-text">This is your third panel</p>
+                    </div>
+                    <div class="carousel-item blue white-text" href="#four!">
+                        <img src="" alt="" style="width: 100%; height: 100%" id="img4" />
+                        <h2>Fourth Panel</h2>
+                        <p class="white-text">This is your fourth panel</p>
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <div class="card" style="min-height:40vh">
+                        <div class="card-content">
+                            <span class="card-title" style="font-weight: bolder;" id="notifg">Notifications</span>
+                            <p style="font-size:large"></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m4 noti">
+                    <div class="card" style="min-height:40vh">
+                        <div class="card-content">
+                            <span class="card-title" style="font-weight: bolder;" id="notifg1">Notifications</span>
+                            <p style="font-size:large"></p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col s12 m4">
+                    <div class="card" style="min-height:40vh">
+                        <div class="card-content">
+                            <span class="card-title" style="font-weight: bolder;">Vision</span>
+                            <p style="font-size:large" id="vision_l">I am a very simple card. I am good at containing
+                                small bits of information.
+                                I am convenient because I require little markup to use effectively.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+              <a  href="add_syllabus.html"><button class="btn btn-2 btn-2h col s5">Add new Syllabus</button></a>
+              <a href="syllabus.html" ><button  class="btn btn-2 btn-2h col s5">Syllabus/ Revision</button></a>
+              <a href="question.html"><button  class="btn btn-2 btn-2h col s5">Feedback by students</button></a>
+              <a href="dashboard_teacher.html"><button  class="btn btn-2 btn-2h col s5">Dashboard for teacher</button></a>
+            </div>
+            <footer class="page-footer theme">
+                <div class="container">
+                    <h5 class="white-text" style="font-weight: bolder;">Contact</h5>
+                    <div class="row">
+                        <div class="col l6 s12">
+                            <p class="grey-text text-lighten-4" style="font-weight:bold">Address</p>
+                            <p class="grey-text text-lighten-4" id="address_l">P-22, x-steet, Noida</p>
+                        </div>
+                        <div class="col l6 s12">
+                            <p class="grey-text text-lighten-4" style="font-weight:bold">Contact no.</p>
+                            <p class="grey-text text-lighten-4" id="cont_l">022-555-666</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <div class="container">
+                        © 2020 Copyright
+                        <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+
+    <script>
+
+        $('.carousel.carousel-slider').carousel({
+            fullWidth: true,
+            indicators: true
+        });
+        $("input[type='radio']").click(function () {
+            var radioValue = $("input[name='group1']:checked").val();
+            if (radioValue !== "blue") {
+                $('.theme').css('background-color', "#8c1515");
+            }
+            else
+                $('.theme').css('background-color', "#0c2461")
+        });
+        $("input[type='radio']").click(function () {
+            var radioValue = $("input[name='group2']:checked").val();
+            if (radioValue !== "def") {
+                $('.temp1').hide();
+                $('.temp2').show();
+                $('.noti').hide();
+            }
+            else {
+                $('.temp2').hide();
+                $('.temp1').show();
+                $('.noti').show();
+            }
+        });
+        $("#inst_name").bind('keyup', function (event) {
+            event.preventDefault();
+            let instl = document.getElementById('inst_l');
+            let instName = document.getElementById('inst_name').value;
+
+            instl.innerText = instName;
+            // TREATS EVERY CONTENT AS TEXT.
+        });
+        function onFileSelected(event) {
+            var selectedFile = event.target.files[0];
+            var reader = new FileReader();
+
+            var imgtag = document.getElementById("logo");
+
+            reader.onload = function (event) {
+                imgtag.src = event.target.result;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+        function onMultipleFileSelect(event) {
+            var selectedFile = event.target.files[0];
+            var reader = new FileReader();
+
+            var imgtag = document.getElementById("img1");
+
+            reader.onload = function (event) {
+                imgtag.src = event.target.result;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+        $("#vision").bind('keyup', function (event) {
+            event.preventDefault();
+            let instl = document.getElementById('vision_l');
+            let instName = document.getElementById('vision').value;
+
+            instl.innerText = instName;
+            // TREATS EVERY CONTENT AS TEXT.
+        });
+        $("#location").bind('keyup', function (event) {
+            event.preventDefault();
+            let instl = document.getElementById('address_l');
+            let instName = document.getElementById('location').value;
+
+            instl.innerText = instName;
+            // TREATS EVERY CONTENT AS TEXT.
+        });
+        $("#contact").bind('keyup', function (event) {
+            event.preventDefault();
+            let instl = document.getElementById('cont_l');
+            let instName = document.getElementById('contact').value;
+
+            instl.innerText = instName;
+            // TREATS EVERY CONTENT AS TEXT.
+
+        });
+
+        var myHeaders = new Headers();
+
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/notif", requestOptions)
+          .then(response => response.text())
+          .then(result => notify(result))
+          .catch(error => console.log('error', error));
+
+        function notify(resp){
+          $("#notifg").text(resp);
+          $("#notifg1").text(resp);
+        }
+
+        function onSubmit(event) {
+            // event.preventDefault();
+            var formData = {
+                inst_name: document.getElementById("inst_name").value,
+                group1: document.getElementById("rad").value,
+                group2: document.getElementById("cs").value,
+                logo: document.getElementById("logo").value,
+                caro: document.getElementById("caro").value,
+                vis: document.getElementById("vision").value,
+                loc: document.getElementById("location").value,
+                contact: document.getElementById("contact").value,
+
+            };
+            console.log(formData);
+            fetch("http://localhost:5000/get_json_data", {
+                method: 'POST',
+                body: formData,
+                headers: {
+  'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
+  'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+  },
+            })
+                .then(res => res.json())
+                .then(res => console.log(res))
+        }
+    </script>
+</body>
+
+</html>

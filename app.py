@@ -2,6 +2,7 @@ from flask import Flask, request, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from classifier import Classify
+import readEmail
 from extract import *
 from werkzeug.utils import secure_filename
 from recommendation import Trends, getCONTENT
@@ -154,28 +155,95 @@ def add_topic():
 
     return make_response("User registered Successfully")
 
-@app.route('/post_feedback', methods=['POST'])
+@app.route('/notif', methods=['GET'])
+def get_notif_email():
+    email = readEmail.read()
+    return jsonify(email)
+
+@app.route('/post_feedback', methods=['POST', 'GET'])
 def save_feedback():
-    ques_1 = request.form.get('ques_1')
-    ques_2 = request.form.get('ques_2')
-    ques_3 = request.form.get('ques_3')
-    ques_4 = request.form.get('ques_4')
-    opinion = request.form.get('opinion')
+    if request.method == 'POST':
+        ques_1 = request.form.get('ques_1')
+        ques_2 = request.form.get('ques_2')
+        ques_3 = request.form.get('ques_3')
+        ques_4 = request.form.get('ques_4')
+        opinion = request.form.get('opinion')
 
-    teacher = request.form.get('teacher')
-    teacher_obj = Teacher.query.filter(Teacher.name == teacher).one()
+        teacher = request.form.get('teacher')
+        teacher_obj = Teacher.query.filter(Teacher.name == teacher).one()
 
-    positive_score = Classify(opinion).classify()
+        positive_score = Classify(opinion).classify()
 
-    if positive_score > 0.75:
-        feedback_obj = Feedback(ques_1=ques_1, ques_2=ques_2, ques_3=ques_3,
-                                ques_4=ques_4, opinion=opinion, teacher=teacher_obj.id)
-        db.session.add(feedback_obj)
-        db.session.commit()
+        if positive_score > 0.75:
+            feedback_obj = Feedback(ques_1=ques_1, ques_2=ques_2, ques_3=ques_3,
+                                    ques_4=ques_4, opinion=opinion, teacher=teacher_obj)
+            db.session.add(feedback_obj)
+            db.session.commit()
 
-        return make_response("Feedback Posted Successfully!")
+            return make_response("Feedback Posted Successfully!")
+        else:
+            return make_response("Invalid Feedback. Please check your language quality")
     else:
-        return make_response("Invalid Feedback. Please check your language quality")
+        query_1 = [Feedback.query.filter(Feedback.ques_1.in_([1])).count(),
+                 Feedback.query.filter(Feedback.ques_1.in_([2])).count(),
+                 Feedback.query.filter(Feedback.ques_1.in_([3])).count(),
+                 Feedback.query.filter(Feedback.ques_1.in_([4])).count(),
+                 Feedback.query.filter(Feedback.ques_1.in_([5])).count()]
+
+        query_2 = [Feedback.query.filter(Feedback.ques_2.in_([1])).count(),
+                 Feedback.query.filter(Feedback.ques_2.in_([2])).count(),
+                 Feedback.query.filter(Feedback.ques_2.in_([3])).count(),
+                 Feedback.query.filter(Feedback.ques_2.in_([4])).count(),
+                 Feedback.query.filter(Feedback.ques_2.in_([5])).count()]
+
+        query_3 = [Feedback.query.filter(Feedback.ques_3.in_([1])).count(),
+                 Feedback.query.filter(Feedback.ques_3.in_([2])).count(),
+                 Feedback.query.filter(Feedback.ques_3.in_([3])).count(),
+                 Feedback.query.filter(Feedback.ques_3.in_([4])).count(),
+                 Feedback.query.filter(Feedback.ques_3.in_([5])).count()]
+
+        query_4 = [Feedback.query.filter(Feedback.ques_4.in_([1])).count(),
+                 Feedback.query.filter(Feedback.ques_4.in_([2])).count(),
+                 Feedback.query.filter(Feedback.ques_4.in_([3])).count(),
+                 Feedback.query.filter(Feedback.ques_4.in_([4])).count(),
+                 Feedback.query.filter(Feedback.ques_4.in_([5])).count()]
+
+        opinion_1 = []
+        for i in Feedback.query.all():
+            opinion_1.append(i.opinion)
+        resp = {"query_1": query_1,
+                "query_2": query_2,
+                "query_3": query_3,
+                "ques_4": query_4,
+                "opinion": opinion_1}
+        return jsonify(resp)
+
+@app.route('/get_json_data', methods=["POST"])
+def get_json_data():
+    college_name = request
+    vision = request.form.get('vis')
+    address = request.form.get('loc')
+    contact = request.form.get('contact')
+    logo_image = request.form.get('logo', '')
+    group = request.form.get('group', '')
+    slider_image = request.form.get('caro', '')
+    web_details = website_details(college_name=college_name, group=group,
+                                  logo_image=logo_image, slider_image=slider_image, contact=contact,
+                                  address=address, vision=vision)
+    try:
+        db.session.add(web_details)
+        db.session.commit()
+        return make_response("Website data saved successfully!")
+    except:
+        return make_response("Unable to save website data")
+
+
+# Creates the dynamic route for the new website
+@app.route('/<college>', methods=['GET'])
+def serve_website(college):
+    print(college)
+    data = website_details.query.filter_by(college_name=college).one()
+    return render_template("base.html", data=data)
 
 
 if __name__ == '__main__':
